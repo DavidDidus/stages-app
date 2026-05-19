@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Stage</title>
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+
+<div id="app">
+
+  <div
+    v-for="stage in stages"
+    :key="stage.id"
+    style="margin-bottom:20px;border:1px solid black;padding:20px"
+  >
+
+    <input type="text" v-model="stage.id">
+
+    <input type="text" v-model="stage.secuencia">
+
+    <input
+      type="text"
+      v-model="stage.camion"
+    >
+
+    <input
+      type="number"
+      v-model="stage.avance"
+      min="0"
+      max="100"
+    >
+
+    
+
+    <select v-model="stage.estado">
+      <option>Cargando</option>
+      <option>En Proceso</option>
+      <option>Finalizado</option>
+      <option>Iniciando</option>
+    </select>
+
+  </div>
+
+  <button @click="save">
+    Guardar
+  </button>
+
+</div>
+
+<script>
+
+const { createApp, ref } = Vue
+
+createApp({
+
+  setup() {
+
+    const stages = ref([])
+
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws"
+
+    const socket = new WebSocket(
+      `${protocol}://${window.location.host}/ws`
+    )
+
+    socket.onmessage = (event) => {
+      stages.value = JSON.parse(event.data)
+    }
+
+    const save = () => {
+      socket.send(JSON.stringify(stages.value))
+    }
+
+    return {
+      stages,
+      save
+    }
+  }
+
+}).mount("#app")
+
+</script>
+
+</body>
+</html>

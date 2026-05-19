@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Estado de Stage</title>
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+
+  <style>
+    :root {
+  --primary: #5ab031;
+
+  --bg: #d9ead7;
+
+  --card: #e8f1eb;
+
+  --card-dark: #d2e6d0;
+
+  --text: #1f2937;
+
+  --muted: #64748b;
+
+  --border: #bfd8bb;
+
+  --success: #22c55e;
+
+  --warning: #facc15;
+
+  --danger: #ef4444;
+
+  --info: #3b82f6;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  color: var(--text);
+
+  overflow-x: hidden;
+}
+
+#app {
+  min-height: 100vh;
+
+}
+
+/* HEADER */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 100px;
+  margin-bottom: 40px;
+
+  background: var(--card);
+
+  border-radius: 24px;
+
+  padding: 24px 30px;
+
+  border: 1px solid var(--border);
+
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.header h1 {
+  font-size: 52px;
+
+  font-weight: 800;
+
+  color: #264831;
+}
+
+.header p {
+  color: var(--muted);
+
+  margin-top: 8px;
+
+  font-size: 18px;
+}
+
+.clock {
+  margin-top: 100PX;
+  text-align: right;
+}
+
+.clock span {
+  display: block;
+
+  color: var(--muted);
+
+  margin-bottom: 8px;
+
+  font-size: 14px;
+}
+
+.clock strong {
+  font-size: 40px;
+
+  color: #264831;
+}
+
+/* STAGES */
+/* STAGES */
+
+.stages-container {
+
+  display: grid;
+
+  grid-template-columns: repeat(5, 1fr);
+
+  gap: 20px;
+
+  padding: 20px;
+
+  padding-top: 180px
+}
+
+/* CARD */
+
+.stage-card {
+
+  background: var(--card);
+
+  border-radius: 24px;
+
+  border: 1px solid var(--border);
+
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+
+  padding: 20px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+
+  transition: 0.2s;
+}
+
+.stage-card:hover {
+  transform: translateY(-4px);
+}
+
+/* TITULO */
+
+.stage-title {
+
+  font-size: 90px;
+
+  font-weight: 900;
+
+  color: #264831;
+
+}
+
+/* CAMION */
+
+.truck-info {
+
+  font-size: 80px;
+
+  font-weight: bold;
+
+
+  color: #1f2937;
+}
+
+/* STATUS */
+
+.status {
+
+  font-size: 18px;
+
+  font-weight: bold;
+
+  padding: 10px 16px;
+
+  border-radius: 999px;
+
+  margin-bottom: 20px;
+
+  text-align: center;
+
+  width: 100%;
+}
+
+.status-green {
+  background: rgba(34, 197, 94, 0.15);
+  color: #15803d;
+}
+
+.status-yellow {
+  background: rgba(250, 204, 21, 0.15);
+  color: #ca8a04;
+}
+
+.status-blue {
+  background: rgba(59, 130, 246, 0.15);
+  color: #2563eb;
+}
+
+.status-red {
+  background: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
+}
+
+/* BARRA VERTICAL */
+
+.vertical-progress {
+
+  margin-top: auto;
+
+  width: 45px;
+
+  height: 150px;
+
+  background: #dbe9d8;
+
+  border-radius: 999px;
+
+  overflow: hidden;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  border: 1px solid #cfe0cb;
+}
+
+.vertical-fill {
+  width: 100%;
+
+  transition: height 0.5s ease;
+
+  border-radius: 999px;
+}
+
+/* COLORES */
+
+.green {
+  background: linear-gradient(
+    180deg,
+    #22c55e,
+    #16a34a
+  );
+}
+
+.blue {
+  background: linear-gradient(
+    180deg,
+    #60a5fa,
+    #2563eb
+  );
+}
+
+.yellow {
+  background: linear-gradient(
+    180deg,
+    #fde047,
+    #eab308
+  );
+}
+
+.red {
+  background: linear-gradient(
+    180deg,
+    #f87171,
+    #dc2626
+  );
+}
+
+/* PORCENTAJE */
+
+.progress-value {
+
+
+  font-size: 42px;
+
+  font-weight: 900;
+
+  color: #264831;
+}
+/* LOGOS */
+/* LOGOS */
+
+.corner-logo {
+  position: fixed;
+
+  top: 0;
+
+  z-index: 9999;
+}
+
+.corner-logo img {
+  height: 90px;
+
+  width: auto;
+
+  object-fit: contain;
+
+  display: block;
+}
+
+/* IZQUIERDA */
+
+.left-logo img {
+  height: 210px;
+}
+
+/* DERECHA */
+
+.right-logo {
+  top: 10px;
+  right: 15px;
+}
+
+.right-logo img {
+  height: 105px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+}
+
+.info-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.truck-block h3 {
+  color: #000;
+}
+.flow-section {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  margin-bottom: 20px;
+}
+
+.flow-arrow {
+
+  font-size: 60px;
+
+  font-weight: bold;
+
+  color: #5ab031;
+
+  line-height: 1;
+
+  margin: 6px 0;
+}
+
+.sequence-box {
+
+  font-size: 70px;
+
+  font-weight: 800;
+
+  min-width: 140px;
+
+  text-align: center;
+
+}
+.top-clock {
+
+  position: fixed;
+
+  top: 20px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  z-index: 9999;
+
+  font-size: 52px;
+
+  font-weight: 900;
+
+  color: #264831;
+
+  letter-spacing: 2px;
+
+  text-shadow: 0 2px 4px rgba(255,255,255,0.5);
+}
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+
+  .stage-card {
+    flex-direction: column;
+  }
+
+  .stage-box {
+    width: 100%;
+  }
+
+  .top-row {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 16px;
+  }
+
+  .header {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 20px;
+  }
+
+  .header h1 {
+    font-size: 38px;
+  }
+  
+}
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="corner-logo left-logo">
+  <img src="../static/ccu.png" alt="CCU">
+</div>
+
+<div class="corner-logo right-logo">
+  <img src="../static/cuspide.png" alt="Logo">
+</div>
+    <!-- HEADER -->
+    
+   
+      <div class="top-clock">
+  [[ currentTime ]]
+</div>
+
+    <!-- STAGES -->
+
+    <div class="stages-container">
+
+  <div
+    class="stage-card"
+    v-for="stage in stages"
+    :key="stage.id"
+  >
+
+    <!-- STAGE -->
+
+    <div class="stage-title">
+      [[ stage.id ]]
+    </div>
+
+    <!-- CAMION -->
+
+    <div class="truck-info">
+      [[ stage.camion ]]
+    </div>
+
+    <div class="flow-section">
+
+  <div class="flow-arrow">
+    ↓
+  </div>
+
+  <div class="sequence-box">
+    [[ stage.secuencia ]]
+  </div>
+  </div>
+
+
+    <!-- VERTICAL PROGRESS -->
+
+    <div class="vertical-progress">
+
+      <div
+        class="vertical-fill"
+        :class="getProgressColor(stage.avance)"
+        :style="{ height: stage.avance + '%' }"
+      ></div>
+
+    </div>
+
+    <!-- % -->
+
+    <div class="progress-value">
+      [[ stage.avance ]]%
+    </div>
+
+  </div>
+
+</div>
+
+  </div>
+
+  <script>
+    const { createApp, ref, onMounted } = Vue
+
+    createApp({
+
+      delimiters: ['[[', ']]'],
+
+      setup() {
+
+        const stages = ref([])
+
+        const protocol = window.location.protocol === "https:" ? "wss" : "ws"
+
+        const socket = new WebSocket(
+        `${protocol}://${window.location.host}/ws`
+        )
+
+        const currentTime = ref("")
+
+        const updateClock = () => {
+          currentTime.value = new Date().toLocaleTimeString("es-CL")
+        }
+
+        const getProgressColor = (avance) => {
+          if (avance >= 100) return "green"
+          if (avance >= 70) return "blue"
+          if (avance >= 40) return "yellow"
+
+          return "red"
+        }
+        const andenNumbers = [1, 2, 3, 4, 5]
+
+        const getStatusClass = (estado) => {
+
+          switch (estado) {
+
+            case "Finalizado":
+              return "status-green"
+
+            case "Cargando":
+              return "status-yellow"
+
+            case "En Proceso":
+              return "status-blue"
+
+            default:
+              return "status-red"
+          }
+        }
+
+        onMounted(() => {
+
+          socket.onmessage = (event) => {
+            stages.value = JSON.parse(event.data)
+          }
+          updateClock()
+          setInterval(() => {
+            updateClock()
+          }, 1000)
+        })
+
+        return {
+          stages,
+          currentTime,
+          getProgressColor,
+          getStatusClass
+        }
+      }
+
+    }).mount("#app")
+  </script>
+  
+</body>
+</html>
