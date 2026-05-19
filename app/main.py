@@ -9,10 +9,10 @@ from fastapi import Request
 app = FastAPI()
 
 # STATIC
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 # TEMPLATES
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="app/templates")
 
 
 app.add_middleware(
