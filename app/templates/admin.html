@@ -1,82 +1,842 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
   <title>Admin Stage</title>
 
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+  <style>
+
+:root {
+
+  --primary: #5ab031;
+
+  --bg: #d9ead7;
+
+  --card: #e8f1eb;
+
+  --text: #1f2937;
+
+  --muted: #64748b;
+
+  --border: #bfd8bb;
+}
+
+* {
+
+  margin: 0;
+
+  padding: 0;
+
+  box-sizing: border-box;
+}
+
+body {
+
+  background: var(--bg);
+
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  color: var(--text);
+
+  overflow-x: hidden;
+}
+
+#app {
+
+  min-height: 100vh;
+}
+
+/* LOGOS */
+
+.corner-logo {
+
+  position: fixed;
+
+  top: 0;
+
+  z-index: 9999;
+}
+
+.corner-logo img {
+
+  display: block;
+
+  object-fit: contain;
+}
+
+.left-logo img {
+
+  height: 210px;
+}
+
+.right-logo {
+
+  top: 10px;
+
+  right: 15px;
+}
+
+.right-logo img {
+
+  height: 105px;
+}
+
+/* CLOCK */
+
+.top-clock {
+
+  position: fixed;
+
+  top: 20px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  z-index: 9999;
+
+  font-size: 52px;
+
+  font-weight: 900;
+
+  color: #264831;
+
+  letter-spacing: 2px;
+
+  text-shadow: 0 2px 4px rgba(255,255,255,0.5);
+}
+
+/* GRID */
+
+.stages-container {
+
+  display: grid;
+
+  gap: 20px;
+
+  padding: 20px;
+
+  padding-top: 180px;
+
+  align-items: start;
+}
+/* CARD */
+
+.stage-card {
+
+  background: var(--card);
+
+  border-radius: 24px;
+
+  border: 1px solid var(--border);
+
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+
+  padding: 20px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  transition: 0.2s;
+}
+
+.stage-card:hover {
+
+  transform: translateY(-4px);
+}
+
+/* INPUTS */
+
+.edit-group {
+
+  width: 100%;
+
+  margin-bottom: 16px;
+}
+
+.edit-group label {
+
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: 30px;
+
+  font-weight: 800;
+
+  color: #264831;
+}
+
+.edit-group input,
+.edit-group select {
+
+  width: 100%;
+
+  padding: 14px 16px;
+
+  border-radius: 14px;
+
+  border: 1px solid #bfd8bb;
+
+  background: white;
+
+  font-size: 22px;
+
+  font-weight: 700;
+
+  color: #1f2937;
+
+  outline: none;
+
+  transition: 0.2s;
+}
+
+.edit-group input:focus,
+.edit-group select:focus {
+
+  border-color: #5ab031;
+
+  box-shadow: 0 0 0 4px rgba(90,176,49,0.15);
+}
+
+/* TITLES */
+
+.stage-title {
+
+  font-size: 80px;
+
+  font-weight: 900;
+
+  color: #264831;
+}
+
+.truck-info {
+
+  font-size: 60px;
+
+  font-weight: bold;
+
+  color: #1f2937;
+}
+
+/* FLOW */
+
+.flow-section {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  margin: 10px 0 20px;
+}
+
+.flow-arrow {
+
+  font-size: 60px;
+
+  font-weight: bold;
+
+  color: #5ab031;
+
+  line-height: 1;
+
+  margin: 6px 0;
+}
+
+.sequence-box {
+
+  font-size: 60px;
+
+  font-weight: 800;
+
+  color: #264831;
+}
+
+/* PROGRESS */
+
+.vertical-progress {
+
+  margin-top: 20px;
+
+  width: 45px;
+
+  height: 150px;
+
+  background: #dbe9d8;
+
+  border-radius: 999px;
+
+  overflow: hidden;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  border: 1px solid #cfe0cb;
+}
+
+.vertical-fill {
+
+  width: 100%;
+
+  transition: height 0.5s ease;
+
+  border-radius: 999px;
+}
+
+.green {
+
+  background: linear-gradient(
+    180deg,
+    #22c55e,
+    #16a34a
+  );
+}
+
+.blue {
+
+  background: linear-gradient(
+    180deg,
+    #60a5fa,
+    #2563eb
+  );
+}
+
+.yellow {
+
+  background: linear-gradient(
+    180deg,
+    #fde047,
+    #eab308
+  );
+}
+
+.red {
+
+  background: linear-gradient(
+    180deg,
+    #f87171,
+    #dc2626
+  );
+}
+
+.progress-value {
+
+  margin-top: 12px;
+
+  font-size: 42px;
+
+  font-weight: 900;
+
+  color: #264831;
+}
+
+/* BUTTON */
+
+.save-btn {
+
+  position: fixed;
+
+  bottom: 30px;
+
+  right: 30px;
+
+  background: #5ab031;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 18px;
+
+  padding: 18px 32px;
+
+  font-size: 24px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+
+  transition: 0.2s;
+
+  z-index: 9999;
+}
+
+.save-btn:hover {
+
+  transform: translateY(-3px);
+}
+
+.add-btn {
+
+  position: fixed;
+
+  bottom: 30px;
+
+  left: 30px;
+
+  background: #2563eb;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 18px;
+
+  padding: 18px 32px;
+
+  font-size: 24px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  z-index: 9999;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.card-actions {
+
+  width: 100%;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+}
+
+.drag-btn {
+
+  background: #dbe9d8;
+
+  border: none;
+
+  border-radius: 12px;
+
+  padding: 10px 16px;
+
+  cursor: grab;
+
+  font-size: 24px;
+
+  font-weight: bold;
+}
+
+.delete-btn {
+
+  background: #ef4444;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 12px;
+
+  padding: 10px 16px;
+
+  cursor: pointer;
+
+  font-size: 20px;
+
+  font-weight: bold;
+}
+
+.sortable-ghost {
+
+  opacity: 0.4;
+}
+
+.sortable-drag {
+
+  transform: rotate(2deg);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+
+  .top-clock {
+
+    font-size: 32px;
+  }
+
+  .left-logo img {
+
+    height: 120px;
+  }
+
+  .right-logo img {
+
+    height: 70px;
+  }
+
+  .stage-title {
+
+    font-size: 50px;
+  }
+
+  .truck-info {
+
+    font-size: 40px;
+  }
+
+  .sequence-box {
+
+    font-size: 42px;
+  }
+}
+
+  </style>
 </head>
 
 <body>
 
 <div id="app">
 
+  <!-- LOGOS -->
+
+  <div class="corner-logo left-logo">
+    <img src="../static/ccu.png" alt="CCU">
+  </div>
+
+  <div class="corner-logo right-logo">
+    <img src="../static/cuspide.png" alt="Logo">
+  </div>
+
+  <!-- CLOCK -->
+
+  <div class="top-clock">
+    [[ currentTime ]]
+  </div>
+
+  <!-- CARDS -->
+
   <div
-    v-for="stage in stages"
-    :key="stage.id"
-    style="margin-bottom:20px;border:1px solid black;padding:20px"
+  class="stages-container"
+  :style="gridStyle"
+  ref="sortableContainer"
+>
+
+    <div
+      class="stage-card"
+      v-for="stage in stages"
+      :key="stage.uid"
+    >
+
+    <div class="card-actions">
+
+  <button class="drag-btn">
+    ⠿
+  </button>
+
+  <button
+    class="delete-btn"
+    @click="removeStage(stage.uid)"
+  >
+    ✕
+  </button>
+
+</div>
+
+<!-- STAGE -->
+
+<div class="edit-group">
+  <label>Stage</label>
+
+  <input
+    type="text"
+    v-model="stage.id"
+  >
+</div>
+
+
+<!-- CAMION -->
+
+<div class="edit-group">
+  <label>Camión</label>
+
+  <input
+    type="text"
+    v-model="stage.camion"
   >
 
-    <input type="text" v-model="stage.id">
+<!-- SECUENCIA -->
 
-    <input type="text" v-model="stage.secuencia">
+<div class="edit-group">
+  <label>Anden</label>
 
-    <input
-      type="text"
-      v-model="stage.camion"
-    >
+  <input
+    type="text"
+    v-model="stage.secuencia"
+  >
+</div>
 
-    <input
-      type="number"
-      v-model="stage.avance"
-      min="0"
-      max="100"
-    >
 
-    
 
-    <select v-model="stage.estado">
-      <option>Cargando</option>
-      <option>En Proceso</option>
-      <option>Finalizado</option>
-      <option>Iniciando</option>
-    </select>
+<!-- AVANCE -->
+
+<div class="edit-group">
+
+  <label>Avance (%)</label>
+
+  <input
+    type="number"
+    v-model="stage.avance"
+    min="0"
+    max="100"
+  >
+
+</div>
+
+</div>
+
+<!-- ESTADO -->
+
+<div class="edit-group">
+
+  <label>Estado</label>
+
+  <select v-model="stage.estado">
+
+    <option>Cargando</option>
+
+    <option>En Proceso</option>
+
+    <option>Finalizado</option>
+
+    <option>Iniciando</option>
+
+  </select>
+
+</div>
+
+    </div>
 
   </div>
 
-  <button @click="save">
-    Guardar
+  <!-- BUTTON -->
+
+  <button
+  class="add-btn"
+  @click="addStage"
+>
+  + Agregar Stage
+</button>
+
+  <button
+    class="save-btn"
+    @click="save"
+  >
+    Guardar Cambios
   </button>
 
 </div>
 
 <script>
 
-const { createApp, ref } = Vue
+const {
+  createApp,
+  ref,
+  onMounted,
+  nextTick,
+  computed
+} = Vue
+
+const sortableContainer = ref(null)
 
 createApp({
+
+  delimiters: ['[[', ']]'],
 
   setup() {
 
     const stages = ref([])
+    const isDragging = ref(false)
 
-    const protocol = window.location.protocol === "https:" ? "wss" : "ws"
+    const gridStyle = computed(() => {
+
+      const total = stages.value.length
+
+      // Hasta 10 → mantener 5 columnas
+      if (total <= 10) {
+
+        return {
+          gridTemplateColumns: 'repeat(5, 1fr)'
+        }
+      }
+
+      // Más de 10 → dividir en 2 filas balanceadas
+      const columns = Math.ceil(total / 2)
+
+      return {
+        gridTemplateColumns: `repeat(${columns}, 1fr)`
+      }
+    })
+
+    const currentTime = ref("")
+
+    const protocol =
+      window.location.protocol === "https:"
+      ? "wss"
+      : "ws"
 
     const socket = new WebSocket(
       `${protocol}://${window.location.host}/ws`
     )
 
     socket.onmessage = (event) => {
-      stages.value = JSON.parse(event.data)
+
+  // NO sobrescribir mientras arrastras
+  if (isDragging.value) return
+
+  const data = JSON.parse(event.data)
+
+  stages.value = data.map(stage => ({
+
+    uid: stage.uid || crypto.randomUUID(),
+
+    ...stage
+  }))
+}
+
+    const updateClock = () => {
+
+      currentTime.value =
+        new Date().toLocaleTimeString("es-CL")
     }
 
     const save = () => {
-      socket.send(JSON.stringify(stages.value))
+
+      socket.send(
+        JSON.stringify(stages.value)
+      )
+    }
+    
+    const addStage = () => {
+
+      stages.value.push({
+        uid: crypto.randomUUID(),
+        id: Date.now().toString(),
+
+        secuencia: stages.value.length + 1,
+
+        camion: "",
+
+        avance: 0,
+
+        estado: "Iniciando"
+      })
     }
 
+    const removeStage = (uid) => {
+
+  stages.value = stages.value.filter(
+    stage => stage.uid !== uid
+  )
+}
+
+    const getProgressColor = (avance) => {
+
+      if (avance >= 100) return "green"
+
+      if (avance >= 70) return "blue"
+
+      if (avance >= 40) return "yellow"
+
+      return "red"
+    }
+
+    onMounted(() => {
+
+      nextTick(() => {
+
+  Sortable.create(
+  sortableContainer.value,
+  {
+
+    animation: 200,
+
+    handle: ".drag-btn",
+
+    ghostClass: "sortable-ghost",
+
+    dragClass: "sortable-drag",
+
+    onStart() {
+
+      isDragging.value = true
+    },
+
+    onEnd(evt) {
+
+      isDragging.value = false
+
+      if (
+        evt.oldIndex == null ||
+        evt.newIndex == null
+      ) return
+
+      const updated = [...stages.value]
+
+      const movedItem =
+        updated[evt.oldIndex]
+
+      updated.splice(evt.oldIndex, 1)
+
+      updated.splice(
+        evt.newIndex,
+        0,
+        movedItem
+      )
+
+      stages.value = updated
+    }
+  }
+)
+})
+
+      updateClock()
+
+      setInterval(() => {
+
+        updateClock()
+
+      }, 1000)
+    })
+
     return {
+      sortableContainer,
+      gridStyle,
+
+addStage,
+
+removeStage,
+
       stages,
-      save
+
+      currentTime,
+
+      save,
+
+      getProgressColor
     }
   }
 

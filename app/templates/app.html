@@ -120,13 +120,13 @@ body {
 
   display: grid;
 
-  grid-template-columns: repeat(5, 1fr);
-
   gap: 20px;
 
   padding: 20px;
 
-  padding-top: 180px
+  padding-top: 180px;
+
+  align-items: start;
 }
 
 /* CARD */
@@ -459,7 +459,7 @@ body {
 
     <!-- STAGES -->
 
-    <div class="stages-container">
+    <div class="stages-container":style="gridStyle">
 
   <div
     class="stage-card"
@@ -516,7 +516,7 @@ body {
   </div>
 
   <script>
-    const { createApp, ref, onMounted } = Vue
+    const { createApp, ref, onMounted,computed } = Vue
 
     createApp({
 
@@ -565,6 +565,27 @@ body {
           }
         }
 
+        const gridStyle = computed(() => {
+
+      const total = stages.value.length
+
+      // Hasta 10 → mantener 5 columnas
+      if (total <= 10) {
+
+        return {
+          gridTemplateColumns: 'repeat(5, 1fr)'
+        }
+      }
+
+      // Más de 10 → dividir en 2 filas balanceadas
+      const columns = Math.ceil(total / 2)
+
+      return {
+        gridTemplateColumns: `repeat(${columns}, 1fr)`
+      }
+    })
+
+
         onMounted(() => {
 
           socket.onmessage = (event) => {
@@ -578,6 +599,7 @@ body {
 
         return {
           stages,
+          gridStyle,
           currentTime,
           getProgressColor,
           getStatusClass
